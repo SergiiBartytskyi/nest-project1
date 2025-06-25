@@ -15,6 +15,12 @@ export class TaskService {
       title: 'Build API',
       isCompleted: true,
     },
+    {
+      id: 3,
+      title: 'Task 1',
+      isCompleted: true,
+      description: 'This is task 1',
+    },
   ];
 
   findAll() {
@@ -32,11 +38,14 @@ export class TaskService {
   }
 
   create(dto: CreateTaskDto) {
-    const { title } = dto;
+    const { title, description, priority, tags } = dto;
 
     const newTask = {
       id: this.tasks.length + 1,
       title,
+      description,
+      priority,
+      tags,
       isCompleted: false,
     };
 
@@ -46,12 +55,13 @@ export class TaskService {
   }
 
   update(id: number, dto: UpdateTaskDto) {
-    const { title, isCompleted } = dto;
+    const { title, isCompleted, description } = dto;
 
     const task = this.findById(id);
 
     task.title = title;
     task.isCompleted = isCompleted;
+    task.description = description;
 
     return task;
   }
