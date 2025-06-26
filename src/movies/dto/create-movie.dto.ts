@@ -1,4 +1,13 @@
+import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator';
+
 export class CreateMovieDto {
+  @IsString()
+  @IsNotEmpty()
   title: string;
-  genre: string;
+
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1888)
+  @Max(new Date().getFullYear())
+  releaseYear: number;
 }

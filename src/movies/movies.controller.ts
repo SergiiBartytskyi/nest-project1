@@ -22,14 +22,19 @@ export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
   @Post()
-  create(@Body() createMovieDto: CreateMovieDto) {
-    return this.moviesService.create(createMovieDto);
+  create(@Body() dto: CreateMovieDto) {
+    return this.moviesService.create(dto);
   }
 
+  // @Get()                                     // Query request
+  // findAll(@Query() query: any) {
+  //   // return this.moviesService.findAll();
+  //   return `${JSON.stringify(query)}`;
+  // }
+
   @Get()
-  findAll(@Query() query: any) {
-    // return this.moviesService.findAll();
-    return `${JSON.stringify(query)}`;
+  async findAll() {
+    return this.moviesService.findAll();
   }
 
   @Get('headers')
