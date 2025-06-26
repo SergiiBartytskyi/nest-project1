@@ -15,6 +15,7 @@ import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import type { Request, Response } from 'express';
+import { MovieEntity } from './entities/movie.entity';
 
 @Controller('movies')
 // @Controller({ path: 'movies', host: 'api.mysite.pl' }) // об'єкт конфігурації Controller
@@ -64,17 +65,20 @@ export class MoviesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.moviesService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<MovieEntity> {
+    return this.moviesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMovieDto: UpdateMovieDto) {
-    return this.moviesService.update(+id, updateMovieDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateMovieDto: UpdateMovieDto,
+  ) {
+    return this.moviesService.update(id, updateMovieDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.moviesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.moviesService.remove(id);
   }
 }
