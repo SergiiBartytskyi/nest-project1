@@ -3,13 +3,19 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MovieEntity } from './entities/movie.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { ActorEntity } from 'src/actor/entities/actor.entity';
+import { MoviePosterEntity } from './entities/poster.entity';
 
 @Injectable()
 export class MoviesService {
   constructor(
     @InjectRepository(MovieEntity)
     private readonly moviesRepository: Repository<MovieEntity>,
+    @InjectRepository(ActorEntity)
+    private readonly actorRepository: Repository<ActorEntity>,
+    @InjectRepository(MoviePosterEntity)
+    private readonly moviePosterRepository: Repository<MoviePosterEntity>,
   ) {}
 
   // create(createMovieDto: CreateMovieDto) {
@@ -17,7 +23,29 @@ export class MoviesService {
   // }
 
   async create(dto: CreateMovieDto): Promise<MovieEntity> {
-    const movie = this.moviesRepository.create(dto);
+    const { title, releaseYear, actorIds, imageUrl } = dto;
+
+    const actors = await this.actorRepository.find({
+      where: {
+        id: In(actorIds),
+      },
+    });
+
+    if (!actors || !actors.length)
+      throw new NotFoundException('Some actors not found');
+
+    let poster: MoviePosterEntity | null = null;
+
+    if (imageUrl) {
+      poster = this.moviePosterRepository.create({ imageUrl });
+      await this.moviePosterRepository.save(poster);
+    }
+    const movie = this.moviesRepository.create({
+      title,
+      releaseYear,
+      actors,
+      poster,
+    });
 
     return await this.moviesRepository.save(movie);
   }
@@ -44,11 +72,12 @@ export class MoviesService {
       where: {
         id,
       },
-      select: {
-        id: true,
-        title: true,
-        releaseYear: true,
-      },
+      // select: {
+      //   id: true,
+      //   title: true,
+      //   releaseYear: true,
+      // },
+      relations: ['actors'],
     });
 
     if (!movie) throw new NotFoundException('Movie not found');

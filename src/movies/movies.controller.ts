@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
+  // Query,
   Headers,
   Req,
   Res,
