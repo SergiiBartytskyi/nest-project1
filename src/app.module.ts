@@ -6,6 +6,7 @@ import { MoviesModule } from './movies/movies.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getTypeOrmConfig } from './config/typeorm.config';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { getTypeOrmConfig } from './config/typeorm.config';
     }),
     TaskModule,
     MoviesModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],
